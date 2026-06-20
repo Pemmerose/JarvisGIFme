@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jarvis GIF Picker</title>
+  <!-- Keep your existing styles here -->
+</head>
+<body>
+  <!-- Keep your HTML structure here -->
+  <script>
+    const apiKey = "OoWTQc168OAzTyPKXoYTooqUGgoMOg7n"; 
+    // Simplified to just "jarvis" to expand the search pool
+    const query = "jarvis"; 
+    let currentUrl = "";
+
+    async function fetchRelevantGif() {
+      const imgElement = document.getElementById("gifDisplay");
+      const copyBtn = document.getElementById("copyBtn");
+      
+      try {
+        // We use a higher limit to ensure a larger pool to pick from
+        const response = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=50`);
+        const result = await response.json();
+        
+        if (result.data.length > 0) {
+          // Force a new random calculation every single time
+          const randomIndex = Math.floor(Math.random() * result.data.length);
+          currentUrl = result.data[randomIndex].images.original.url;
+          
+          imgElement.src = currentUrl;
+          imgElement.style.display = "block";
+          copyBtn.style.display = "inline";
+        }
+      } catch (error) {
+        alert("Error fetching GIF.");
+      }
+    }
+
+    // Call this function when the page loads to show a GIF immediately
+    window.onload = fetchRelevantGif;
+  </script>
+</body>
+</html>
